@@ -1,0 +1,6 @@
+main: me.rayzr522.flash.Flash
+name: ${project.name}
+description: ${project.description}
+version: ${project.version}
+url: ${project.url}
+author: Rayzr

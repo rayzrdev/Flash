@@ -1,0 +1,15 @@
+prefix: "&8\u00bb&6 "
+no-permission: "&cYou need the permission '%s' to do that!"
+
+command:
+  fail:
+    prefix-addon: "&c"
+    generic: "%s"
+    only-players: "Only players can use this command!"
+    no-player: "The player '%s' does not exist!"
+    not-number: "That is not a valid number!"
+    invalid-usage: "Usage: &7/%s &e%s"
+  flash:
+    usage: "[reload]"
+    version: "You are currently running &c%s&6 v&c%s&6."
+    reloaded: "The config has been reloaded."
