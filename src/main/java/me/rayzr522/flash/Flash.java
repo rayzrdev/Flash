@@ -11,6 +11,7 @@ import me.rayzr522.flash.gui.listener.InventoryGuiListener;
 import me.rayzr522.flash.gui.render.InventoryRenderTarget;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Flash extends FlashPlugin {
     @Override
@@ -48,12 +49,23 @@ public class Flash extends FlashPlugin {
                             3,
                             3,
                             ItemFactory.of(Material.GLASS).setName("Hello").build()
-                    );
+                    ).setOnClick(clickEvent -> {
+
+                    });
                     GridPane gridPane = new GridPane(9, 4, 2, 3);
                     gridPane.addChild(button, 1, 0);
 
                     Gui gui = new Gui(renderTarget, ctx.getPlayer(), gridPane);
                     gui.show();
+
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            button.setItem(
+                                    ItemFactory.of(Material.GLASS_BOTTLE).setName("Bye!").build()
+                            );
+                        }
+                    }.runTaskLater(Flash.this, 2 * 20);
 
                     return CommandResult.SUCCESS;
                 }

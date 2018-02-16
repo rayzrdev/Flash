@@ -122,7 +122,7 @@ public class GridPane extends Pane {
         }
     }
 
-    private void renderChild(Node child, RenderTarget target) {
+    protected void renderChild(Node child, RenderTarget target) {
         RenderTarget renderTarget = getSubRenderTarget(child, target);
         child.render(renderTarget);
     }

@@ -1,5 +1,6 @@
 package me.rayzr522.flash.gui.display;
 
+import me.rayzr522.flash.gui.RenderTarget;
 import org.apache.commons.lang.math.IntRange;
 
 import javax.annotation.Nonnull;
@@ -11,11 +12,13 @@ import java.util.Optional;
 public abstract class Pane extends Node {
 
     private List<Node> children;
+    private ChildChangeWatcher childChangeWatcher;
 
     public Pane(int width, int height) {
         super(width, height);
 
         this.children = new ArrayList<>();
+        this.childChangeWatcher = new ChildChangeWatcher(this);
     }
 
     /**
@@ -24,6 +27,40 @@ public abstract class Pane extends Node {
     @Nonnull
     public List<Node> getChildren() {
         return Collections.unmodifiableList(children);
+    }
+
+    /**
+     * Returns a modifiable view of the children.
+     * <p>
+     * <p><br><strong>Please ensure that you also call {@link #registerChild(Node, IntRange, IntRange)} with the
+     * appropriate values.</strong>
+     *
+     * @return all children
+     */
+    protected List<Node> getChildrenModifiable() {
+        return children;
+    }
+
+    /**
+     * Rerenders a given child, because it has changed.
+     *
+     * @param node   the node that changed
+     * @param target the target to render it with
+     */
+    abstract protected void renderChild(Node node, RenderTarget target);
+
+    /**
+     * Renders this child and unwatches it when no longer needed.
+     *
+     * @param node the node to render
+     */
+    void renderChildImpl(Node node) {
+        if (!getChildren().contains(node)) {
+            childChangeWatcher.unwatchChild(node);
+            return;
+        }
+
+        getRenderTarget().ifPresent(target -> renderChild(node, target));
     }
 
     /**
@@ -57,18 +94,6 @@ public abstract class Pane extends Node {
     }
 
     /**
-     * Returns a modifiable view of the children.
-     * <p>
-     * <p><br><strong>Please ensure that you also call {@link #registerChild(Node, IntRange, IntRange)} with the
-     * appropriate values.</strong>
-     *
-     * @return all children
-     */
-    protected List<Node> getChildrenModifiable() {
-        return children;
-    }
-
-    /**
      * Registers a node as a child of this. Needed to correctly calculate the position.
      *
      * @param child  the child to add
@@ -78,6 +103,7 @@ public abstract class Pane extends Node {
     protected void registerChild(Node child, IntRange xRange, IntRange yRange) {
         child.setAttachedData(PositionalDataKey.X, xRange);
         child.setAttachedData(PositionalDataKey.Y, yRange);
+        childChangeWatcher.watchNode(child);
     }
 
     /**
