@@ -84,6 +84,7 @@ public class CommandRegister {
         assert command != null;
         command.setExecutor(new InternalCommandHandler(commandHandler));
         command.setAliases(commandHandler.getAliases());
+        command.setPermission(commandHandler.getPermission());
 
         if (commandMap.register(commandHandler.getCommandName(), plugin.getName(), command)) {
             registeredCommands.add(command);
