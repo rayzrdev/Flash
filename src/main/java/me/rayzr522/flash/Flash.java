@@ -4,6 +4,7 @@ import me.rayzr522.flash.command.CommandContext;
 import me.rayzr522.flash.command.CommandHandler;
 import me.rayzr522.flash.command.CommandResult;
 import me.rayzr522.flash.factory.ItemFactory;
+import me.rayzr522.flash.gui.Calculator;
 import me.rayzr522.flash.gui.Gui;
 import me.rayzr522.flash.gui.display.component.Button;
 import me.rayzr522.flash.gui.display.component.Label;
@@ -40,6 +41,11 @@ public class Flash extends FlashPlugin {
             @Override
             public CommandResult execute(CommandContext ctx) {
                 if ("".isEmpty()) {
+                    Calculator calculator = new Calculator(ctx.getPlayer());
+                    calculator.show();
+                    return CommandResult.SUCCESS;
+                }
+                if ("s".isEmpty()) {
                     Button button = new Button(3, 3, Material.GLASS, "Hello")
                             .setOnClick(clickEvent -> clickEvent.getOwner().sendMessage("Hey!"));
 
@@ -48,15 +54,15 @@ public class Flash extends FlashPlugin {
                             .rows(6)
 //                            .editRootPane(pane -> pane.addChild(button, 1, 1))
                             .editRootPane(pane -> pane.addChild(button))
-                            .editRootPane(pane -> pane.addChild(new Label(3, 2, Material.GLASS, "1")))
-                            .editRootPane(pane -> pane.addChild(new Label(2, 2, Material.RED_MUSHROOM, "2")))
-                            .editRootPane(pane -> pane.addChild(new Label(2, 2, Material.STONE, "3")))
-                            .editRootPane(pane -> pane.addChild(new Label(2, 4, Material.IRON_AXE, "4")))
-                            .editRootPane(pane -> pane.addChild(new Label(3, 2, Material.GOLD_AXE, "5")))
-                            .editRootPane(pane -> pane.addChild(new Label(3, 1, Material.DIAMOND_AXE, "6")))
-                            .editRootPane(pane -> pane.addChild(new Label(3, 1, Material.DIAMOND, "7")))
-                            .editRootPane(pane -> pane.addChild(new Label(1, 4, Material.DIAMOND_BLOCK, "8")))
-                            .editRootPane(pane -> pane.addChild(new Label(1, 5, Material.GOLD_BLOCK, "9")))
+//                            .editRootPane(pane -> pane.addChild(new Label(3, 2, Material.GLASS, "1")))
+//                            .editRootPane(pane -> pane.addChild(new Label(2, 2, Material.RED_MUSHROOM, "2")))
+//                            .editRootPane(pane -> pane.addChild(new Label(2, 2, Material.STONE, "3")))
+//                            .editRootPane(pane -> pane.addChild(new Label(2, 4, Material.IRON_AXE, "4")))
+//                            .editRootPane(pane -> pane.addChild(new Label(3, 2, Material.GOLD_AXE, "5")))
+//                            .editRootPane(pane -> pane.addChild(new Label(3, 1, Material.DIAMOND_AXE, "6")))
+//                            .editRootPane(pane -> pane.addChild(new Label(3, 1, Material.DIAMOND, "7")))
+//                            .editRootPane(pane -> pane.addChild(new Label(1, 4, Material.DIAMOND_BLOCK, "8")))
+//                            .editRootPane(pane -> pane.addChild(new Label(1, 5, Material.GOLD_BLOCK, "9")))
                             .build();
                     gui.show();
 

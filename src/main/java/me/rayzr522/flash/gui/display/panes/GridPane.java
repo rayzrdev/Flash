@@ -95,6 +95,7 @@ public class GridPane extends Pane {
         int x = gridX * getGridWidth();
         int y = gridY * getGridHeight();
 
+        // We do not want to draw too far out, if the child is at the right/bottom edge
         int childWidth = Math.min(getGridWidth(), child.getWidth());
         int childHeight = Math.min(getGridHeight(), child.getHeight());
 
@@ -145,28 +146,6 @@ public class GridPane extends Pane {
         renderTarget.clear();
 
         child.render(renderTarget);
-    }
-
-    private RenderTarget getSubRenderTarget(Node child, RenderTarget rootTarget) {
-        Pair<Integer, Integer> childPosition = getChildPosition(child);
-        int x = childPosition.getFirst();
-        int y = childPosition.getSecond();
-
-        int maxX = x * getGridWidth() + getGridWidth();
-        int maxY = y * getGridHeight() + getGridHeight();
-
-        // We do not want to draw too far out, if the child is at the right/bottom edge
-        maxX = Math.min(getWidth(), maxX);
-        maxY = Math.min(getHeight(), maxY);
-
-        // We also do not want to draw into the next frame, since subframes are all inclusive
-        maxX--;
-        maxY--;
-
-        return rootTarget.getSubsetTarget(
-                x * getGridWidth(), maxX,
-                y * getGridHeight(), maxY
-        );
     }
 
     private Pair<Integer, Integer> getChildPosition(Node child) {

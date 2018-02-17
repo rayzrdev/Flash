@@ -73,7 +73,12 @@ public class SubRenderTarget implements RenderTarget {
 
     @Override
     public RenderTarget getSubsetTarget(int minX, int maxX, int minY, int maxY) {
-        return delegate.getSubsetTarget(minX, maxX, minY, maxY);
+        return delegate.getSubsetTarget(
+                this.minX + minX,
+                this.maxX + maxX,
+                this.minY + minY,
+                this.maxY + maxY
+        );
     }
 
     @Override

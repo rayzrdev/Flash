@@ -107,8 +107,9 @@ public class FlowPane extends Pane {
      */
     private Pair<Integer, Integer> getPositionOfSize(int width, int height) {
         // naive algo, not particularly intelligent, impressive runtime
-        for (int x = 0; x < slots.length; x++) {
-            for (int y = 0; y < slots[x].length; y++) {
+        // x and y swapped to distribute from left to right, top to bottom
+        for (int y = 0; y < slots[0].length; y++) {
+            for (int x = 0; x < slots.length; x++) {
                 if (hasSpaceOfSize(x, y, width, height)) {
                     return new Pair<>(x, y);
                 }
@@ -171,18 +172,7 @@ public class FlowPane extends Pane {
         RenderTarget subsetTarget = getSubRenderTarget(node, target);
 
         subsetTarget.clear();
-        node.render(subsetTarget);
-    }
-
-    private RenderTarget getSubRenderTarget(Node node, RenderTarget rootTarget) {
-        Pair<IntRange, IntRange> bounds = computeChildBounds(node);
-        IntRange xRange = bounds.getFirst();
-        IntRange yRange = bounds.getSecond();
-
-        return rootTarget.getSubsetTarget(
-                xRange.getMinimumInteger(), xRange.getMaximumInteger(),
-                yRange.getMinimumInteger(), yRange.getMaximumInteger()
-        );
+        node.implRender(subsetTarget);
     }
 
     /**

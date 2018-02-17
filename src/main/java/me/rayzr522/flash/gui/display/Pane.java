@@ -84,7 +84,7 @@ public abstract class Pane extends Node {
             }
 
             if (node instanceof Pane) {
-                return ((Pane) node).getNodeAt(x, y);
+                return ((Pane) node).getNodeAt(x - xRange.getMinimumInteger(), y - yRange.getMinimumInteger());
             }
 
             return Optional.of(node);
@@ -122,6 +122,25 @@ public abstract class Pane extends Node {
         node.removeAttachedData(PositionalDataKey.X);
         node.removeAttachedData(PositionalDataKey.Y);
     }
+
+    /**
+     * Returns a {@link RenderTarget} for just the section of the given node.
+     *
+     * @param node       the node to get it for
+     * @param rootTarget the root {@link RenderTarget}
+     * @return the new {@link RenderTarget} for the area of the passed node
+     */
+    protected RenderTarget getSubRenderTarget(Node node, RenderTarget rootTarget) {
+        Pair<IntRange, IntRange> bounds = computeChildBounds(node);
+        IntRange xRange = bounds.getFirst();
+        IntRange yRange = bounds.getSecond();
+
+        return rootTarget.getSubsetTarget(
+                xRange.getMinimumInteger(), xRange.getMaximumInteger(),
+                yRange.getMinimumInteger(), yRange.getMaximumInteger()
+        );
+    }
+
 
     /**
      * Clears the currently occupied area of the node. Does <em>not</em> recompute the bounds.
