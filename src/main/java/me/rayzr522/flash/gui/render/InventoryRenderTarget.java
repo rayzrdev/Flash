@@ -80,7 +80,7 @@ public class InventoryRenderTarget implements RenderTarget, InventoryHolder {
     @Override
     public void clear(int minX, int maxX, int minY, int maxY) {
         for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y < maxY; y++) {
+            for (int y = minY; y <= maxY; y++) {
                 setItem(x, y, null);
             }
         }
