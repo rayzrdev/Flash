@@ -54,7 +54,8 @@ public class Flash extends FlashPlugin {
                             button.setItem(
                                     ItemFactory.of(Material.GLASS_BOTTLE).setName("Bye!").build()
                             );
-                            button.setWidth(20);
+                            button.setWidth(3);
+                            button.setHeight(3);
                         }
                     }.runTaskLater(Flash.this, 2 * 20);
 
