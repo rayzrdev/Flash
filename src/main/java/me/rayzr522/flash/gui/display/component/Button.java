@@ -5,10 +5,14 @@ import me.rayzr522.flash.gui.PrimitiveRenderedElement;
 import me.rayzr522.flash.gui.RenderTarget;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.events.ClickEvent;
+import me.rayzr522.flash.gui.properties.Disposable;
 import me.rayzr522.flash.gui.properties.ObservableProperty;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -17,6 +21,7 @@ import java.util.function.Consumer;
 public class Button extends Node {
 
     private ObservableProperty<ItemStack> item;
+    private Disposable lastSubscription;
 
     private Consumer<ClickEvent> onClick;
 
@@ -71,12 +76,42 @@ public class Button extends Node {
     }
 
     /**
+     * @return the item this button currently displays. A clone.
+     */
+    public ItemStack getItem() {
+        return item.getValue().clone();
+    }
+
+    /**
      * Sets the item this button displays.
      *
      * @param item the item
      */
     public void setItem(ItemStack item) {
+        undoSubscriptions();
         this.item.setValue(item);
+    }
+
+    /**
+     * @param label the label to display
+     * @return this object
+     */
+    @Nonnull
+    public Button setLabel(@Nullable ObservableProperty<String> label) {
+        Objects.requireNonNull(label, "label can not be null!");
+        undoSubscriptions();
+
+        // can't call the others as they'd void the subscription
+        lastSubscription = label.addListener(() -> item.setValue(
+                ItemFactory.of(getItem()).setName(label.getValue()).build()
+        ));
+        return this;
+    }
+
+    private void undoSubscriptions() {
+        if (lastSubscription != null) {
+            lastSubscription.dispose();
+        }
     }
 
     @Override

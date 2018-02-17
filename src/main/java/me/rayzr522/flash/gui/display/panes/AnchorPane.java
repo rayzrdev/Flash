@@ -5,6 +5,9 @@ import me.rayzr522.flash.gui.display.Pane;
 import me.rayzr522.flash.struct.Pair;
 import org.apache.commons.lang.math.IntRange;
 
+/**
+ * A pane that allows you to freely choose where to place components.
+ */
 public class AnchorPane extends Pane {
 
     /**

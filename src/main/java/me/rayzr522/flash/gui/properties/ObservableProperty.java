@@ -1,8 +1,8 @@
 package me.rayzr522.flash.gui.properties;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A property that will notify listeners when it was changed.
@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class ObservableProperty<T> {
 
-    private List<Runnable> listeners;
+    private Set<Runnable> listeners;
     private T value;
 
     /**
@@ -22,7 +22,7 @@ public class ObservableProperty<T> {
     public ObservableProperty(T value) {
         this.value = value;
 
-        this.listeners = new ArrayList<>();
+        this.listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     }
 
     public T getValue() {
@@ -38,9 +38,11 @@ public class ObservableProperty<T> {
      * Adds a listener, that is called after changes were applied.
      *
      * @param listener the listener to run
+     * @return a {@link Disposable} to undo the subscription
      */
-    public void addListener(Runnable listener) {
+    public Disposable addListener(Runnable listener) {
         listeners.add(listener);
+        return new Disposable(this, listener);
     }
 
     /**

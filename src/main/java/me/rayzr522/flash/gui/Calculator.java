@@ -6,6 +6,8 @@ import me.rayzr522.flash.gui.display.component.Label;
 import me.rayzr522.flash.gui.display.panes.AnchorPane;
 import me.rayzr522.flash.gui.display.panes.FlowPane;
 import me.rayzr522.flash.gui.flow.FlowInventoryGui;
+import me.rayzr522.flash.gui.properties.ObservableProperty;
+import me.rayzr522.flash.gui.properties.StringExpression;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,13 +16,13 @@ import java.util.function.IntBinaryOperator;
 
 public class Calculator {
 
-    private int result;
+    private ObservableProperty<Integer> result = new ObservableProperty<>(0);
     private Gui gui;
     private Label output;
 
-    private String left = "";
-    private String right = "";
-    private Operator operator;
+    private ObservableProperty<String> left = new ObservableProperty<>("");
+    private ObservableProperty<String> right = new ObservableProperty<>("");
+    private ObservableProperty<Operator> operator = new ObservableProperty<>(null);
 
     public Calculator(Player player) {
         Pane numpad = buildNumPad();
@@ -34,6 +36,16 @@ public class Calculator {
                 .editRootPane(flowPane -> flowPane.addChild(operators, 6, 0))
                 .editRootPane(flowPane -> flowPane.addChild(output, 0, 4))
                 .build();
+
+        StringExpression concat = new StringExpression(ChatColor.GREEN.toString())
+                .concat(left, "%s%-10s")
+                .concat(" " + ChatColor.RED)
+                .concatWithDefault(operator, "|-|")
+                .concat(" " + ChatColor.GREEN)
+                .concat(right, "%s%10s")
+                .concat("   = " + ChatColor.AQUA + ChatColor.BOLD)
+                .concat(result);
+        output.setLabel(concat);
     }
 
     private Pane buildNumPad() {
@@ -78,52 +90,35 @@ public class Calculator {
     }
 
     private void onReceiveNumber(int number) {
-        if (operator == null) {
-            left += number;
+        if (operator.getValue() == null) {
+            left.setValue(left.getValue() + number);
         } else {
-            right += number;
+            right.setValue(right.getValue() + number);
         }
-        updateOutput();
     }
 
     private void onReceiveOperator(Operator operator) {
-        this.operator = operator;
-        updateOutput();
+        this.operator.setValue(operator);
     }
 
     private void onCalculate() {
-        result = operator.apply(Integer.parseInt(left), Integer.parseInt(right));
-        updateOutput();
-    }
-
-    private void updateOutput() {
-        output.setLabel(String.format(
-                "%s%-10s %s%s %s%10s    = %s%d",
-                ChatColor.GREEN.toString(),
-                left,
-                ChatColor.RED.toString(),
-                operator == null ? "|-|" : operator.name(),
-                ChatColor.GREEN.toString(),
-                right,
-                ChatColor.AQUA.toString() + ChatColor.BOLD,
-                result
-        ));
+        result.setValue(
+                operator.getValue().apply(
+                        Integer.parseInt(left.getValue()),
+                        Integer.parseInt(right.getValue())
+                )
+        );
     }
 
     private void reset() {
-        left = "";
-        right = "";
-        operator = null;
-        result = 0;
-        updateOutput();
+        left.setValue("");
+        right.setValue("");
+        operator.setValue(null);
+        result.setValue(0);
     }
 
     public void show() {
         gui.show();
-    }
-
-    public int getResult() {
-        return result;
     }
 
     private enum Operator {

@@ -5,12 +5,14 @@ import me.rayzr522.flash.gui.PrimitiveRenderedElement;
 import me.rayzr522.flash.gui.RenderTarget;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.events.ClickEvent;
+import me.rayzr522.flash.gui.properties.Disposable;
 import me.rayzr522.flash.gui.properties.ObservableProperty;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * A small item displaying an item, but disallowing pulling it out.
@@ -18,6 +20,7 @@ import javax.annotation.Nullable;
 public class Label extends Node {
 
     private ObservableProperty<ItemStack> item;
+    private Disposable lastSubscription;
 
     /**
      * Creates a label displaying the given item.
@@ -71,6 +74,7 @@ public class Label extends Node {
      */
     @Nonnull
     public Label setItem(ItemStack label) {
+        undoSubscriptions();
         this.item.setValue(label.clone());
         return this;
     }
@@ -81,8 +85,31 @@ public class Label extends Node {
      */
     @Nonnull
     public Label setLabel(@Nullable String label) {
+        undoSubscriptions();
         setItem(ItemFactory.of(getItem()).setName(label).build());
         return this;
+    }
+
+    /**
+     * @param label the label to display
+     * @return this object
+     */
+    @Nonnull
+    public Label setLabel(@Nullable ObservableProperty<String> label) {
+        Objects.requireNonNull(label, "label can not be null!");
+        undoSubscriptions();
+
+        // can't call the others as they'd void the subscription
+        lastSubscription = label.addListener(() -> item.setValue(
+                ItemFactory.of(getItem()).setName(label.getValue()).build()
+        ));
+        return this;
+    }
+
+    private void undoSubscriptions() {
+        if (lastSubscription != null) {
+            lastSubscription.dispose();
+        }
     }
 
     @Override
