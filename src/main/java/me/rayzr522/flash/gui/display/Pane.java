@@ -44,7 +44,12 @@ public abstract class Pane extends Node {
      * @param node   the node that changed
      * @param target the target to render it with
      */
-    abstract protected void renderChild(Node node, RenderTarget target);
+    protected void renderChild(Node node, RenderTarget target) {
+        RenderTarget renderTarget = getSubRenderTarget(node, target);
+        renderTarget.clear();
+
+        node.implRender(renderTarget);
+    }
 
     /**
      * Renders this child and un-watches it when no longer needed.

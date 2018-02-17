@@ -1,6 +1,5 @@
 package me.rayzr522.flash.gui.display.panes;
 
-import me.rayzr522.flash.gui.RenderTarget;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.display.Pane;
 import me.rayzr522.flash.struct.Pair;
@@ -42,14 +41,6 @@ public class AnchorPane extends Pane {
         if (y < 0 || y >= getHeight()) {
             throw new ArrayIndexOutOfBoundsException(y);
         }
-    }
-
-    @Override
-    protected void renderChild(Node node, RenderTarget target) {
-        RenderTarget subRenderTarget = getSubRenderTarget(node, target);
-        subRenderTarget.clear();
-
-        node.implRender(subRenderTarget);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package me.rayzr522.flash.gui.display.panes;
 
 import me.rayzr522.flash.factory.LogFactory;
-import me.rayzr522.flash.gui.RenderTarget;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.display.Pane;
 import me.rayzr522.flash.struct.Pair;
@@ -165,14 +164,6 @@ public class FlowPane extends Pane {
         }
 
         return new Pair<>(x, y);
-    }
-
-    @Override
-    protected void renderChild(Node node, RenderTarget target) {
-        RenderTarget subsetTarget = getSubRenderTarget(node, target);
-
-        subsetTarget.clear();
-        node.implRender(subsetTarget);
     }
 
     /**

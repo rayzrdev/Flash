@@ -1,6 +1,5 @@
 package me.rayzr522.flash.gui.display.panes;
 
-import me.rayzr522.flash.gui.RenderTarget;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.display.Pane;
 import me.rayzr522.flash.struct.Pair;
@@ -138,14 +137,6 @@ public class GridPane extends Pane {
                     return position.getFirst() == x && position.getSecond() == y;
                 })
                 .findFirst();
-    }
-
-    @Override
-    protected void renderChild(Node child, RenderTarget target) {
-        RenderTarget renderTarget = getSubRenderTarget(child, target);
-        renderTarget.clear();
-
-        child.render(renderTarget);
     }
 
     private Pair<Integer, Integer> getChildPosition(Node child) {
