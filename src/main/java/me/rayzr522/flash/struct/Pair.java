@@ -5,8 +5,8 @@ import java.util.Objects;
 /**
  * A simple pair, that holds two values.
  *
- * @param <R>    the type of the first element
- * @param <T>the type of the second element
+ * @param <R> the type of the first element
+ * @param <T> the type of the second element
  */
 public class Pair<R, T> {
 
@@ -41,7 +41,6 @@ public class Pair<R, T> {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(first, second);
     }
 

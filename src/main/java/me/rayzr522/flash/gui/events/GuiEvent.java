@@ -7,14 +7,25 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+/**
+ * An event involving the {@link Gui}.
+ */
 public abstract class GuiEvent {
 
     private final Gui gui;
     private final Node source;
     private final PrimitiveRenderedElement elementSource;
 
-    public GuiEvent(@Nonnull Gui gui, @Nonnull Node source, @Nonnull PrimitiveRenderedElement elementSource) {
+    /**
+     * Creates a new {@link GuiEvent}.
+     *
+     * @param gui           the {@link Gui} it occurred in
+     * @param source        the {@link Node} it originated from
+     * @param elementSource the {@link PrimitiveRenderedElement} that was acted upon
+     */
+    public GuiEvent(@Nonnull Gui gui, @Nonnull Node source, @Nullable PrimitiveRenderedElement elementSource) {
         this.gui = gui;
         this.source = source;
         this.elementSource = elementSource;
@@ -30,7 +41,11 @@ public abstract class GuiEvent {
         return source;
     }
 
-    @Nonnull
+    /**
+     * @return the rendered element that was acted upon. May be null if a space in a component was clicked, but there
+     * was nothing rendered there.
+     */
+    @Nullable
     public PrimitiveRenderedElement getElementSource() {
         return elementSource;
     }

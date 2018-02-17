@@ -4,6 +4,9 @@ import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nullable;
 
+/**
+ * An object that is able to render given {@link PrimitiveRenderedElement} on <em>something.</em>
+ */
 public interface RenderTarget {
 
     /**

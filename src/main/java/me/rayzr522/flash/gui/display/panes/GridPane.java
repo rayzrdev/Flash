@@ -64,11 +64,10 @@ public class GridPane extends Pane {
     public GridPane addChild(Node node, int column, int row) {
         ensureInBounds(column, row);
 
-        node.setAttachedData(DataKeys.ROW, row);
-        node.setAttachedData(DataKeys.COLUMN, column);
+        node.setAttachedData(GridDataKeys.ROW, row);
+        node.setAttachedData(GridDataKeys.COLUMN, column);
 
-        findChild(column, row).ifPresent(previousNode -> getChildrenModifiable().remove(previousNode));
-        getChildrenModifiable().add(node);
+        findChild(column, row).ifPresent(this::unregisterChild);
 
         registerChild(node);
 
@@ -126,9 +125,7 @@ public class GridPane extends Pane {
      * @return this object
      */
     public GridPane removeChild(Node node) {
-        getChildrenModifiable().remove(node);
-
-        getRenderTarget().ifPresent(target -> getSubRenderTarget(node, target).clear());
+        unregisterChild(node);
 
         return this;
     }
@@ -142,8 +139,11 @@ public class GridPane extends Pane {
                 .findFirst();
     }
 
+    @Override
     protected void renderChild(Node child, RenderTarget target) {
         RenderTarget renderTarget = getSubRenderTarget(child, target);
+        renderTarget.clear();
+
         child.render(renderTarget);
     }
 
@@ -170,8 +170,8 @@ public class GridPane extends Pane {
     }
 
     private Pair<Integer, Integer> getChildPosition(Node child) {
-        Integer column = getNodeColumn(child);
-        Integer row = getNodeRow(child);
+        Integer column = child.getAttachedData(GridDataKeys.COLUMN);
+        Integer row = child.getAttachedData(GridDataKeys.ROW);
 
         if (row == null || column == null) {
             throw new IllegalStateException("Child node has no positional data: " + child);
@@ -180,18 +180,10 @@ public class GridPane extends Pane {
         return Pair.of(column, row);
     }
 
-    private Integer getNodeRow(Node node) {
-        return node.getAttachedData(DataKeys.ROW);
-    }
-
-    private Integer getNodeColumn(Node node) {
-        return node.getAttachedData(DataKeys.COLUMN);
-    }
-
     /**
      * The keys encoding the data for children of this class.
      */
-    private enum DataKeys {
+    private enum GridDataKeys {
         ROW, COLUMN
     }
 }

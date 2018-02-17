@@ -23,7 +23,7 @@ public class FlowPane extends Pane {
     }
 
     /**
-     * Adds a child to this pane
+     * Adds a child to this pane.
      *
      * @param node the node to add
      * @return false if the node was too big to be placed in this scene
@@ -39,11 +39,7 @@ public class FlowPane extends Pane {
      * @return this pane
      */
     public FlowPane removeChild(Node node) {
-        Objects.requireNonNull(node, "node can not be null!");
-
-        getChildrenModifiable().remove(node);
-
-        getRenderTarget().ifPresent(target -> getSubRenderTarget(node, target).clear());
+        unregisterChild(Objects.requireNonNull(node, "node can not be null!"));
 
         return this;
     }
@@ -86,20 +82,31 @@ public class FlowPane extends Pane {
             return false;
         }
 
+        // fill space of that node
         for (int x = 0; x < node.getWidth(); x++) {
             for (int y = 0; y < node.getHeight(); y++) {
                 slots[position.getFirst() + x][position.getSecond() + y] = true;
             }
         }
 
-        node.setAttachedData(DataKeys.X, position.getFirst());
-        node.setAttachedData(DataKeys.Y, position.getSecond());
-        getChildrenModifiable().add(node);
+        node.setAttachedData(StartPositionKey.X, position.getFirst());
+        node.setAttachedData(StartPositionKey.Y, position.getSecond());
         registerChild(node);
         return true;
     }
 
+    /**
+     * Tries to find a free position where a rectangle with the given size can fit.
+     * <p>
+     * This is a variant of the bin packing problem, and my algorithm is awesome for it: Slow and finds not even a
+     * local maximum.
+     *
+     * @param width  the width of the space to find
+     * @param height the height of the space to find
+     * @return the found space (X, Y) or null if none
+     */
     private Pair<Integer, Integer> getPositionOfSize(int width, int height) {
+        // naive algo, not particularly intelligent, impressive runtime
         for (int x = 0; x < slots.length; x++) {
             for (int y = 0; y < slots[x].length; y++) {
                 if (hasSpaceOfSize(x, y, width, height)) {
@@ -110,6 +117,15 @@ public class FlowPane extends Pane {
         return null;
     }
 
+    /**
+     * Checks if the given rectangle is free.
+     *
+     * @param x      the x coordinate of the top left corner
+     * @param y      the y coordinate of the top left corner
+     * @param width  the width of the space
+     * @param height the height of the space
+     * @return true if there is enough space
+     */
     private boolean hasSpaceOfSize(int x, int y, int width, int height) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -130,10 +146,24 @@ public class FlowPane extends Pane {
         int x = childPosition.getFirst();
         int y = childPosition.getSecond();
 
+        int maxX = Math.min(getWidth(), x + child.getWidth());
+        int maxY = Math.min(getHeight(), y + child.getHeight());
+
         return new Pair<>(
-                new IntRange(x, x + child.getWidth() - 1),
-                new IntRange(y, y + child.getHeight() - 1)
+                new IntRange(x, maxX - 1), // -1 as we compute the start of the next
+                new IntRange(y, maxY - 1) // -1 as we compute the start of the next
         );
+    }
+
+    private Pair<Integer, Integer> getChildPosition(Node child) {
+        Integer x = child.getAttachedData(StartPositionKey.X);
+        Integer y = child.getAttachedData(StartPositionKey.Y);
+
+        if (x == null || y == null) {
+            throw new IllegalArgumentException("Child has no positional data: " + child);
+        }
+
+        return new Pair<>(x, y);
     }
 
     @Override
@@ -144,32 +174,21 @@ public class FlowPane extends Pane {
         node.render(subsetTarget);
     }
 
-    private RenderTarget getSubRenderTarget(Node node, RenderTarget target) {
+    private RenderTarget getSubRenderTarget(Node node, RenderTarget rootTarget) {
         Pair<IntRange, IntRange> bounds = computeChildBounds(node);
         IntRange xRange = bounds.getFirst();
         IntRange yRange = bounds.getSecond();
 
-        int maxX = Math.min(xRange.getMaximumInteger(), getWidth());
-        int maxY = Math.min(yRange.getMaximumInteger(), getHeight());
-
-        return target.getSubsetTarget(
-                xRange.getMinimumInteger(), maxX,
-                yRange.getMinimumInteger(), maxY
+        return rootTarget.getSubsetTarget(
+                xRange.getMinimumInteger(), xRange.getMaximumInteger(),
+                yRange.getMinimumInteger(), yRange.getMaximumInteger()
         );
     }
 
-    private Pair<Integer, Integer> getChildPosition(Node child) {
-        Integer x = child.getAttachedData(DataKeys.X);
-        Integer y = child.getAttachedData(DataKeys.Y);
-
-        if (x == null || y == null) {
-            throw new IllegalArgumentException("Child has no positional data: " + child);
-        }
-
-        return new Pair<>(x, y);
-    }
-
-    private enum DataKeys {
+    /**
+     * Stores the position of the upper left corner of a child.
+     */
+    private enum StartPositionKey {
         X, Y
     }
 }

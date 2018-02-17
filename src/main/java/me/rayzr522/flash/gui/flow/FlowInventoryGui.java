@@ -1,8 +1,9 @@
 package me.rayzr522.flash.gui.flow;
 
 import me.rayzr522.flash.gui.Gui;
+import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.display.Pane;
-import me.rayzr522.flash.gui.display.panes.GridPane;
+import me.rayzr522.flash.gui.display.panes.FlowPane;
 import me.rayzr522.flash.gui.render.InventoryRenderTarget;
 import org.bukkit.entity.Player;
 
@@ -10,6 +11,11 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * A small fluid wrapper/helper to create a {@link Gui}.
+ *
+ * @param <T> the type of the root {@link Pane}
+ */
 public class FlowInventoryGui<T extends Pane> {
 
     private Player player;
@@ -22,7 +28,7 @@ public class FlowInventoryGui<T extends Pane> {
         this.player = Objects.requireNonNull(player, "player can not be null!");
 
         this.rows = 6;
-        this.rootPane = (T) new GridPane(9, rows, 2, 3);
+        this.rootPane = (T) new FlowPane(9, rows);
     }
 
     /**
@@ -37,14 +43,15 @@ public class FlowInventoryGui<T extends Pane> {
     }
 
     /**
-     * Sets the root pane for the {@link Gui}. The default is a GridPane with 2 rows and 3 columns spanning the whole
-     * area.
+     * Sets the root pane for the {@link Gui}. The default is a {@link FlowPane} spanning the whole area.
      *
      * @param pane the root pane
      * @return this object
      */
     @SuppressWarnings("unchecked")
     public <Z extends Pane> FlowInventoryGui<Z> setRootPane(@Nonnull Z pane) {
+        // okay, this cast will likely be wrong, but that's not gonna cause an error as the erasure of 'T' is 'Pane',
+        // and the passed in object will also be a pane.
         this.rootPane = Objects.requireNonNull((T) pane, "pane can not be null!");
 
         return (FlowInventoryGui<Z>) this;
@@ -53,11 +60,11 @@ public class FlowInventoryGui<T extends Pane> {
     /**
      * Returns an editor to edit the root pane.
      *
-     * @param paneeditor the editor for the pane
+     * @param paneEditor the editor for the pane
      * @return this object
      */
-    public FlowInventoryGui<T> editRootPane(Consumer<T> paneeditor) {
-        paneeditor.accept(rootPane);
+    public FlowInventoryGui<T> editRootPane(Consumer<T> paneEditor) {
+        paneEditor.accept(rootPane);
         return this;
     }
 
@@ -89,7 +96,22 @@ public class FlowInventoryGui<T extends Pane> {
      * @param player the player to build it for
      * @return a builder
      */
-    public static FlowInventoryGui<GridPane> forPlayer(@Nonnull Player player) {
+    public static FlowInventoryGui<FlowPane> forPlayer(@Nonnull Player player) {
         return new FlowInventoryGui<>(player);
+    }
+
+    /**
+     * Creates a new builder for a player and adds the given children to it.
+     *
+     * @param player   the player to build it for
+     * @param children the children to add
+     * @return a builder
+     */
+    public static FlowInventoryGui<FlowPane> flowPaneWithChildren(@Nonnull Player player, Node... children) {
+        return new FlowInventoryGui<FlowPane>(player).editRootPane(pane -> {
+            for (Node child : children) {
+                pane.addChild(child);
+            }
+        });
     }
 }

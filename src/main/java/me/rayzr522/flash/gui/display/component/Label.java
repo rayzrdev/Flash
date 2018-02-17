@@ -9,6 +9,9 @@ import me.rayzr522.flash.gui.properties.ObservableProperty;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A small item displaying an item, but disallowing pulling it out.
  */
@@ -16,16 +19,38 @@ public class Label extends Node {
 
     private ObservableProperty<ItemStack> item;
 
+    /**
+     * Creates a label displaying the given item.
+     *
+     * @param width  the width of the label
+     * @param height the height of the item
+     * @param item   the item to display
+     */
     public Label(int width, int height, ItemStack item) {
         super(width, height);
 
         this.item = new ObservableProperty<>(item.clone());
     }
 
+    /**
+     * Creates a new label made up of the given material and name.
+     *
+     * @param width    the width of the label
+     * @param height   the height of the item
+     * @param material the material the label is made of
+     * @param label    the label to display
+     */
     public Label(int width, int height, Material material, String label) {
         this(width, height, ItemFactory.of(material).setName(label).build());
     }
 
+    /**
+     * Creates a new label with no text and the given material.
+     *
+     * @param width    the width of the label
+     * @param height   the height of the item
+     * @param material the material the label is made of
+     */
     public Label(int width, int height, Material material) {
         this(width, height, material, "");
     }
@@ -33,6 +58,7 @@ public class Label extends Node {
     /**
      * @return the item this label currently displays. A clone.
      */
+    @Nonnull
     public ItemStack getItem() {
         return item.getValue().clone();
     }
@@ -43,6 +69,7 @@ public class Label extends Node {
      * @param label the itemstack to display
      * @return this object
      */
+    @Nonnull
     public Label setItem(ItemStack label) {
         this.item.setValue(label.clone());
         return this;
@@ -52,10 +79,9 @@ public class Label extends Node {
      * @param label the label to display
      * @return this object
      */
-    public Label setLabel(String label) {
-        setItem(
-                ItemFactory.of(getItem()).setName(label).build()
-        );
+    @Nonnull
+    public Label setLabel(@Nullable String label) {
+        setItem(ItemFactory.of(getItem()).setName(label).build());
         return this;
     }
 

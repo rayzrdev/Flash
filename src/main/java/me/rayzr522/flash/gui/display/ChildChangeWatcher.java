@@ -18,6 +18,11 @@ class ChildChangeWatcher {
     private Pane owner;
     private Map<Node, Runnable> watched;
 
+    /**
+     * Reports to a given pane.
+     *
+     * @param owner the pane to report to
+     */
     ChildChangeWatcher(Pane owner) {
         this.owner = owner;
 
@@ -39,9 +44,15 @@ class ChildChangeWatcher {
         watched.put(node, changeListener);
     }
 
-    private Collection<ObservableProperty<?>> getPropertiesSafe(Object object) {
+    /**
+     * Returns all properties, handling an access error kinda gracefully.
+     *
+     * @param node the node to retrieve the properties for
+     * @return all found properties
+     */
+    private Collection<ObservableProperty<?>> getPropertiesSafe(Node node) {
         try {
-            return getProperties(object);
+            return getProperties(node);
         } catch (IllegalAccessException e) {
             LOGGER.log(Level.WARNING, "Could not read property from Node!", e);
         }
@@ -49,19 +60,26 @@ class ChildChangeWatcher {
         return Collections.emptyList();
     }
 
-    private Collection<ObservableProperty<?>> getProperties(Object object) throws IllegalAccessException {
+    /**
+     * Returns all properties in the given class or a superclass of it
+     *
+     * @param node the node to get them for
+     * @return all found properties
+     * @throws IllegalAccessException if the access was denied
+     */
+    private Collection<ObservableProperty<?>> getProperties(Node node) throws IllegalAccessException {
         Set<ObservableProperty<?>> properties = new HashSet<>();
 
-        Class<?> currentClass = object.getClass();
+        Class<?> currentClass = node.getClass();
         while (currentClass.getSuperclass() != null) {
-            properties.addAll(getProperties(object, currentClass.getDeclaredFields()));
+            properties.addAll(getProperties(node, currentClass.getDeclaredFields()));
             currentClass = currentClass.getSuperclass();
         }
 
         return properties;
     }
 
-    private Set<ObservableProperty<?>> getProperties(Object handle, Field[] fields) throws IllegalAccessException {
+    private Set<ObservableProperty<?>> getProperties(Node handle, Field[] fields) throws IllegalAccessException {
         Set<ObservableProperty<?>> properties = new HashSet<>();
 
         for (Field field : fields) {
@@ -75,7 +93,7 @@ class ChildChangeWatcher {
         return properties;
     }
 
-    private ObservableProperty<?> processField(Field field, Object handle) throws IllegalAccessException {
+    private ObservableProperty<?> processField(Field field, Node handle) throws IllegalAccessException {
         Class<?> type = field.getType();
         if (!ObservableProperty.class.isAssignableFrom(type)) {
             return null;

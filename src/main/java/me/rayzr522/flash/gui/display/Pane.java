@@ -23,7 +23,7 @@ public abstract class Pane extends Node {
     }
 
     /**
-     * @return a list with all children of this pane
+     * @return a list with all children of this pane. Unmodifiable.
      */
     @Nonnull
     public List<Node> getChildren() {
@@ -39,18 +39,7 @@ public abstract class Pane extends Node {
     }
 
     /**
-     * Returns a modifiable view of the children.
-     * <p>
-     * <p><br><strong>Please ensure that you also call {@link #registerChild(Node)}.</strong>
-     *
-     * @return all children
-     */
-    protected List<Node> getChildrenModifiable() {
-        return children;
-    }
-
-    /**
-     * Rerenders a given child, because it has changed.
+     * Re-renders a given child, because it has changed.
      *
      * @param node   the node that changed
      * @param target the target to render it with
@@ -58,7 +47,7 @@ public abstract class Pane extends Node {
     abstract protected void renderChild(Node node, RenderTarget target);
 
     /**
-     * Renders this child and unwatches it when no longer needed.
+     * Renders this child and un-watches it when no longer needed.
      *
      * @param node the node to render
      */
@@ -67,6 +56,8 @@ public abstract class Pane extends Node {
             childChangeWatcher.unwatchChild(node);
             return;
         }
+        // needed in case the size changed
+        clearChildArea(node);
 
         updateChildBounds(node);
         getRenderTarget().ifPresent(target -> renderChild(node, target));
@@ -104,12 +95,53 @@ public abstract class Pane extends Node {
 
     /**
      * Registers a node as a child of this. Needed to correctly watch for changes.
+     * <p>
+     * After calling this method, {@link #getChildren()} will contain the passed node
      *
      * @param child the child to add
      */
     protected void registerChild(Node child) {
+        children.add(child);
         childChangeWatcher.watchNode(child);
         updateChildBounds(child);
+    }
+
+    /**
+     * Removes a child from this pane.
+     * <p>
+     * After calling this method, {@link #getChildren()} will no longer contain the passed node and the area it made up
+     * will be cleared.
+     *
+     * @param node the node to remove
+     */
+    protected void unregisterChild(Node node) {
+        clearChildArea(node);
+
+        children.remove(node);
+
+        node.removeAttachedData(PositionalDataKey.X);
+        node.removeAttachedData(PositionalDataKey.Y);
+    }
+
+    /**
+     * Clears the currently occupied area of the node. Does <em>not</em> recompute the bounds.
+     *
+     * @param node the node whose area to clear
+     */
+    private void clearChildArea(Node node) {
+        getRenderTarget().ifPresent(target -> {
+            IntRange xRange = node.getAttachedData(PositionalDataKey.X);
+            IntRange yRange = node.getAttachedData(PositionalDataKey.Y);
+
+            if (xRange == null || yRange == null) {
+                return;
+            }
+
+            target.clear(
+                    xRange.getMinimumInteger(), xRange.getMaximumInteger(),
+                    yRange.getMinimumInteger(), yRange.getMaximumInteger()
+            );
+        });
     }
 
     /**

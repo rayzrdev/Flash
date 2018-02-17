@@ -28,10 +28,6 @@ public class InventoryGuiEventFactory {
         }
 
         PrimitiveRenderedElement element = gui.findElement(coordinates.getFirst(), coordinates.getSecond());
-        //noinspection OptionalIsPresent
-        if (element == null) {
-            return null;
-        }
 
         return new ClickEvent(gui, node.get(), element, event.getClick(), event);
     }

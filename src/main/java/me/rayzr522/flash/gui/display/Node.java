@@ -59,7 +59,7 @@ public abstract class Node implements GuiEventReceiver {
     /**
      * The internal method used for rendering this component.
      * <p>
-     * <p><em>Do not call this yourself. In fact, you shouldn't call {@link #render(RenderTarget)}
+     * <p><em>Do <strong>not</strong> call this yourself. In fact, you shouldn't call {@link #render(RenderTarget)}
      * either...</em>
      *
      * @param target the target to render with

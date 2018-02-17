@@ -29,7 +29,7 @@ public class Gui implements GuiEventReceiver {
     }
 
     /**
-     * Renders this gui.
+     * Renders this gui. You should not need to call this manually at all, but you can if you wish to.
      */
     public void render() {
         rootPane.implRender(renderTarget);

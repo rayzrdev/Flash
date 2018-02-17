@@ -11,12 +11,22 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
 
+/**
+ * A small button, that displays an item and provides a click listener.
+ */
 public class Button extends Node {
 
     private ObservableProperty<ItemStack> item;
 
     private Consumer<ClickEvent> onClick;
 
+    /**
+     * Creates a new button.
+     *
+     * @param width  the width of the button
+     * @param height the height of the button
+     * @param item   the item to display
+     */
     public Button(int width, int height, ItemStack item) {
         super(width, height);
 
@@ -25,6 +35,14 @@ public class Button extends Node {
         };
     }
 
+    /**
+     * Creates a new button, using the passed material and label.
+     *
+     * @param width    the width of the button
+     * @param height   the height of the button
+     * @param material The {@link Material} to display
+     * @param label    the label to display
+     */
     public Button(int width, int height, Material material, String label) {
         this(width, height, ItemFactory.of(material).setName(label).build());
     }
@@ -63,8 +81,8 @@ public class Button extends Node {
 
     @Override
     public void render(RenderTarget target) {
-        for (int x = 0; x < getWidth(); x++) {
-            for (int y = 0; y < getHeight(); y++) {
+        for (int x = 0; x < getWidth() - 1; x++) {
+            for (int y = 0; y < getHeight() - 1; y++) {
                 target.render(
                         new PrimitiveRenderedElement(null, item.getValue(), this),
                         x,
