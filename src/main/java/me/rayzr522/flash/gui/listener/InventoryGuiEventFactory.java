@@ -5,11 +5,9 @@ import me.rayzr522.flash.gui.PrimitiveRenderedElement;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.events.ClickEvent;
 import me.rayzr522.flash.struct.Pair;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class InventoryGuiEventFactory {
 
@@ -35,14 +33,10 @@ public class InventoryGuiEventFactory {
             return null;
         }
 
-        return new ClickEvent(gui, node.get(), element, event.getClick(), getCancelWriteThrough(event));
+        return new ClickEvent(gui, node.get(), element, event.getClick(), event);
     }
 
     private static Pair<Integer, Integer> slotToCoordinates(int slot) {
         return new Pair<>(slot % 9, slot / 9);
-    }
-
-    private static Consumer<Boolean> getCancelWriteThrough(Cancellable cancellable) {
-        return cancellable::setCancelled;
     }
 }

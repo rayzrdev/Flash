@@ -30,15 +30,28 @@ public class Label extends Node {
         this(width, height, material, "");
     }
 
+    /**
+     * @return the item this label currently displays. A clone.
+     */
     public ItemStack getItem() {
-        return item.getValue();
+        return item.getValue().clone();
     }
 
+    /**
+     * Sets the new {@link ItemStack} to display.
+     *
+     * @param label the itemstack to display
+     * @return this object
+     */
     public Label setItem(ItemStack label) {
         this.item.setValue(label.clone());
         return this;
     }
 
+    /**
+     * @param label the label to display
+     * @return this object
+     */
     public Label setLabel(String label) {
         setItem(
                 ItemFactory.of(getItem()).setName(label).build()
