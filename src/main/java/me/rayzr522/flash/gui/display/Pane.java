@@ -1,6 +1,7 @@
 package me.rayzr522.flash.gui.display;
 
 import me.rayzr522.flash.gui.RenderTarget;
+import me.rayzr522.flash.struct.Pair;
 import org.apache.commons.lang.math.IntRange;
 
 import javax.annotation.Nonnull;
@@ -60,6 +61,7 @@ public abstract class Pane extends Node {
             return;
         }
 
+        updateChildBounds(node);
         getRenderTarget().ifPresent(target -> renderChild(node, target));
     }
 
@@ -94,17 +96,37 @@ public abstract class Pane extends Node {
     }
 
     /**
-     * Registers a node as a child of this. Needed to correctly calculate the position.
+     * Registers a node as a child of this. Needed to correctly watch for changes.
      *
-     * @param child  the child to add
-     * @param xRange the x range the child spans, inclusive and zero based
-     * @param yRange the y range the child span, inclusive and zero based
+     * @param child the child to add
      */
-    protected void registerChild(Node child, IntRange xRange, IntRange yRange) {
-        child.setAttachedData(PositionalDataKey.X, xRange);
-        child.setAttachedData(PositionalDataKey.Y, yRange);
+    protected void registerChild(Node child) {
         childChangeWatcher.watchNode(child);
+        updateChildBounds(child);
     }
+
+    /**
+     * Updates the bounds of a child. Needed to correctly retrieve the child at a given coordinate, therefore you must
+     * ensure that they are sensibly clipped, when needed.
+     *
+     * @param child the child to update them for
+     */
+    protected void updateChildBounds(Node child) {
+        Pair<IntRange, IntRange> bounds = computeChildBounds(child);
+        child.setAttachedData(PositionalDataKey.X, bounds.getFirst());
+        child.setAttachedData(PositionalDataKey.Y, bounds.getSecond());
+    }
+
+    /**
+     * Computes the bounds of the child. First value is the xRange, second the yRange.
+     * <p>
+     * <p><br>Both are zero based and inclusive
+     *
+     * @param child the child to compute the bounds for
+     * @return the computed bounds
+     */
+    protected abstract Pair<IntRange, IntRange> computeChildBounds(Node child);
+
 
     /**
      * The keys for the positional data.

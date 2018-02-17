@@ -56,9 +56,10 @@ public class GridPane extends Pane {
      * @param node   The child to add
      * @param column the column to add it at, zero based
      * @param row    the row to add it at, zero based
+     * @return this object
      * @throws IndexOutOfBoundsException if the row or column is not within bounds
      */
-    public void addChild(Node node, int column, int row) {
+    public GridPane addChild(Node node, int column, int row) {
         ensureInBounds(column, row);
 
         node.setAttachedData(DataKeys.ROW, row);
@@ -67,10 +68,11 @@ public class GridPane extends Pane {
         findChild(column, row).ifPresent(previousNode -> getChildrenModifiable().remove(previousNode));
         getChildrenModifiable().add(node);
 
-        Pair<IntRange, IntRange> boundsForChild = getBoundsForChild(node);
-        registerChild(node, boundsForChild.getFirst(), boundsForChild.getSecond());
+        registerChild(node);
 
         getRenderTarget().ifPresent(target -> renderChild(node, target));
+
+        return this;
     }
 
     private void ensureInBounds(int x, int y) {
@@ -83,26 +85,50 @@ public class GridPane extends Pane {
         }
     }
 
+    @Override
+    protected Pair<IntRange, IntRange> computeChildBounds(Node child) {
+        Pair<Integer, Integer> childPosition = getChildPosition(child);
+        int gridX = childPosition.getFirst();
+        int gridY = childPosition.getSecond();
+
+        int x = gridX * getGridWidth();
+        int y = gridY * getGridHeight();
+
+        int childWidth = Math.min(getGridWidth(), child.getWidth());
+        int childHeight = Math.min(getGridHeight(), child.getHeight());
+
+        return new Pair<>(
+                new IntRange(x, x + childWidth - 1), // -1 as we computed where the next one starts
+                new IntRange(y, y + childHeight - 1) // -1 as we computed where the next one starts
+        );
+    }
+
     /**
      * Removes the node at the given position from this pane.
      *
      * @param column the column of the child, zero based
      * @param row    the row of the child, zero based
+     * @return this object
      */
-    public void removeChild(int column, int row) {
+    public GridPane removeChild(int column, int row) {
         ensureInBounds(column, row);
         findChild(column, row).ifPresent(this::removeChild);
+
+        return this;
     }
 
     /**
      * Removes the given node from this pane.
      *
      * @param node the child to remove
+     * @return this object
      */
-    public void removeChild(Node node) {
+    public GridPane removeChild(Node node) {
         getChildrenModifiable().remove(node);
 
         getRenderTarget().ifPresent(target -> getSubRenderTarget(node, target).clear());
+
+        return this;
     }
 
     private Optional<Node> findChild(int x, int y) {
@@ -146,20 +172,6 @@ public class GridPane extends Pane {
         return rootTarget.getSubsetTarget(
                 x * getGridWidth(), maxX,
                 y * getGridHeight(), maxY
-        );
-    }
-
-    private Pair<IntRange, IntRange> getBoundsForChild(Node child) {
-        Pair<Integer, Integer> childPosition = getChildPosition(child);
-        int gridX = childPosition.getFirst();
-        int gridY = childPosition.getSecond();
-
-        int x = gridX * getGridWidth();
-        int y = gridY * getGridHeight();
-
-        return new Pair<>(
-                new IntRange(x, x + getGridWidth() - 1), // -1 as we computed where the next one starts
-                new IntRange(y, y + getGridHeight() - 1) // -1 as we computed where the next one starts
         );
     }
 

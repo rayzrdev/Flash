@@ -39,7 +39,7 @@ class ChildChangeWatcher {
         watched.put(node, changeListener);
     }
 
-    private List<ObservableProperty<?>> getPropertiesSafe(Object object) {
+    private Collection<ObservableProperty<?>> getPropertiesSafe(Object object) {
         try {
             return getProperties(object);
         } catch (IllegalAccessException e) {
@@ -49,20 +49,40 @@ class ChildChangeWatcher {
         return Collections.emptyList();
     }
 
-    private List<ObservableProperty<?>> getProperties(Object object) throws IllegalAccessException {
-        List<ObservableProperty<?>> properties = new ArrayList<>();
+    private Collection<ObservableProperty<?>> getProperties(Object object) throws IllegalAccessException {
+        Set<ObservableProperty<?>> properties = new HashSet<>();
 
-        for (Field field : object.getClass().getDeclaredFields()) {
-            Class<?> type = field.getType();
-            if (!ObservableProperty.class.isAssignableFrom(type)) {
-                continue;
-            }
-            field.setAccessible(true);
-
-            properties.add((ObservableProperty<?>) field.get(object));
+        Class<?> currentClass = object.getClass();
+        while (currentClass.getSuperclass() != null) {
+            properties.addAll(getProperties(object, currentClass.getDeclaredFields()));
+            currentClass = currentClass.getSuperclass();
         }
 
         return properties;
+    }
+
+    private Set<ObservableProperty<?>> getProperties(Object handle, Field[] fields) throws IllegalAccessException {
+        Set<ObservableProperty<?>> properties = new HashSet<>();
+
+        for (Field field : fields) {
+            ObservableProperty<?> property = processField(field, handle);
+
+            if (property != null) {
+                properties.add(property);
+            }
+        }
+
+        return properties;
+    }
+
+    private ObservableProperty<?> processField(Field field, Object handle) throws IllegalAccessException {
+        Class<?> type = field.getType();
+        if (!ObservableProperty.class.isAssignableFrom(type)) {
+            return null;
+        }
+        field.setAccessible(true);
+
+        return (ObservableProperty<?>) field.get(handle);
     }
 
     /**

@@ -3,6 +3,7 @@ package me.rayzr522.flash.gui.display;
 import me.rayzr522.flash.gui.GuiEventReceiver;
 import me.rayzr522.flash.gui.RenderTarget;
 import me.rayzr522.flash.gui.events.ClickEvent;
+import me.rayzr522.flash.gui.properties.ObservableProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,23 +20,31 @@ public abstract class Node implements GuiEventReceiver {
     private Map<Object, Object> attachedData;
     private WeakReference<RenderTarget> lastRenderTarget;
 
-    private int width;
-    private int height;
+    private ObservableProperty<Integer> width;
+    private ObservableProperty<Integer> height;
 
     public Node(int width, int height) {
-        this.width = width;
-        this.height = height;
+        this.width = new ObservableProperty<>(width);
+        this.height = new ObservableProperty<>(height);
 
         this.attachedData = new HashMap<>();
         this.lastRenderTarget = new WeakReference<>(null);
     }
 
     public int getWidth() {
-        return width;
+        return width.getValue();
     }
 
     public int getHeight() {
-        return height;
+        return height.getValue();
+    }
+
+    public void setWidth(int width) {
+        this.width.setValue(width);
+    }
+
+    public void setHeight(int height) {
+        this.height.setValue(height);
     }
 
     /**

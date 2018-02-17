@@ -4,11 +4,9 @@ import me.rayzr522.flash.command.CommandContext;
 import me.rayzr522.flash.command.CommandHandler;
 import me.rayzr522.flash.command.CommandResult;
 import me.rayzr522.flash.factory.ItemFactory;
-import me.rayzr522.flash.gui.Gui;
-import me.rayzr522.flash.gui.display.GridPane;
 import me.rayzr522.flash.gui.display.component.Button;
+import me.rayzr522.flash.gui.flow.FlowInventoryGui;
 import me.rayzr522.flash.gui.listener.InventoryGuiListener;
-import me.rayzr522.flash.gui.render.InventoryRenderTarget;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,23 +38,15 @@ public class Flash extends FlashPlugin {
             @Override
             public CommandResult execute(CommandContext ctx) {
                 if ("".isEmpty()) {
-                    InventoryRenderTarget renderTarget = new InventoryRenderTarget(
-                            9,
-                            6,
-                            ChatColor.RED + "Hello world!"
-                    );
-                    Button button = new Button(
-                            3,
-                            3,
-                            ItemFactory.of(Material.GLASS).setName("Hello").build()
-                    ).setOnClick(clickEvent -> {
+                    Button button = new Button(Material.GLASS, "Hello")
+                            .setOnClick(clickEvent -> clickEvent.getOwner().sendMessage("Hey!"));
 
-                    });
-                    GridPane gridPane = new GridPane(9, 4, 2, 3);
-                    gridPane.addChild(button, 1, 0);
-
-                    Gui gui = new Gui(renderTarget, ctx.getPlayer(), gridPane);
-                    gui.show();
+                    FlowInventoryGui.forPlayer(ctx.getPlayer())
+                            .title(ChatColor.RED + "I am a GUI!")
+                            .rows(6)
+                            .editRootPane(pane -> pane.addChild(button, 1, 1))
+                            .build()
+                            .show();
 
                     new BukkitRunnable() {
                         @Override
@@ -64,6 +54,7 @@ public class Flash extends FlashPlugin {
                             button.setItem(
                                     ItemFactory.of(Material.GLASS_BOTTLE).setName("Bye!").build()
                             );
+                            button.setWidth(20);
                         }
                     }.runTaskLater(Flash.this, 2 * 20);
 

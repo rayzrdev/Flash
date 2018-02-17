@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A propery that will notify listeners when it was changed.
+ * A property that will notify listeners when it was changed.
  *
  * @param <T> the type of the data it wraps
  */

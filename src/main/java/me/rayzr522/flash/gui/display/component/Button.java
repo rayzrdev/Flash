@@ -1,10 +1,12 @@
 package me.rayzr522.flash.gui.display.component;
 
+import me.rayzr522.flash.factory.ItemFactory;
 import me.rayzr522.flash.gui.PrimitiveRenderedElement;
 import me.rayzr522.flash.gui.RenderTarget;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.events.ClickEvent;
 import me.rayzr522.flash.gui.properties.ObservableProperty;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
@@ -21,6 +23,20 @@ public class Button extends Node {
         this.item = new ObservableProperty<>(item.clone());
         this.onClick = clickEvent -> {
         };
+    }
+
+    public Button(int width, int height, Material material, String label) {
+        this(width, height, ItemFactory.of(material).setName(label).build());
+    }
+
+    /**
+     * Creates a button with size 1.
+     *
+     * @param material The {@link Material} to display
+     * @param label    the label to display
+     */
+    public Button(Material material, String label) {
+        this(1, 1, ItemFactory.of(material).setName(label).build());
     }
 
     /**
