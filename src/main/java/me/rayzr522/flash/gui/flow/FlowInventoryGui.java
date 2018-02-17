@@ -1,8 +1,8 @@
 package me.rayzr522.flash.gui.flow;
 
 import me.rayzr522.flash.gui.Gui;
-import me.rayzr522.flash.gui.display.GridPane;
 import me.rayzr522.flash.gui.display.Pane;
+import me.rayzr522.flash.gui.display.panes.GridPane;
 import me.rayzr522.flash.gui.render.InventoryRenderTarget;
 import org.bukkit.entity.Player;
 
@@ -43,10 +43,11 @@ public class FlowInventoryGui<T extends Pane> {
      * @param pane the root pane
      * @return this object
      */
-    public FlowInventoryGui<T> setRootPane(@Nonnull T pane) {
-        this.rootPane = Objects.requireNonNull(pane, "pane can not be null!");
+    @SuppressWarnings("unchecked")
+    public <Z extends Pane> FlowInventoryGui<Z> setRootPane(@Nonnull Z pane) {
+        this.rootPane = Objects.requireNonNull((T) pane, "pane can not be null!");
 
-        return this;
+        return (FlowInventoryGui<Z>) this;
     }
 
     /**

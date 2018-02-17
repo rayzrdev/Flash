@@ -30,11 +30,18 @@ public abstract class Pane extends Node {
         return Collections.unmodifiableList(children);
     }
 
+    @Override
+    public void render(RenderTarget target) {
+        target.clear();
+        for (Node node : getChildren()) {
+            renderChild(node, target);
+        }
+    }
+
     /**
      * Returns a modifiable view of the children.
      * <p>
-     * <p><br><strong>Please ensure that you also call {@link #registerChild(Node, IntRange, IntRange)} with the
-     * appropriate values.</strong>
+     * <p><br><strong>Please ensure that you also call {@link #registerChild(Node)}.</strong>
      *
      * @return all children
      */

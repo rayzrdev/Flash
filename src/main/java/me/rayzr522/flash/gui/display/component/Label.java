@@ -27,7 +27,7 @@ public class Label extends Node {
     }
 
     public Label(int width, int height, Material material) {
-        this(width, height, material, null);
+        this(width, height, material, "");
     }
 
     public ItemStack getItem() {
