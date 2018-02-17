@@ -26,7 +26,7 @@ public class FlowInventoryGui<T extends Pane> {
     }
 
     /**
-     * Sets the amount off rows in this {@link Gui}.
+     * Sets the amount off rows in this {@link Gui}. The default is 6.
      *
      * @param rows the amount of rows
      * @return this object
@@ -37,7 +37,8 @@ public class FlowInventoryGui<T extends Pane> {
     }
 
     /**
-     * Sets the root pane for the {@link Gui}.
+     * Sets the root pane for the {@link Gui}. The default is a GridPane with 2 rows and 3 columns spanning the whole
+     * area.
      *
      * @param pane the root pane
      * @return this object

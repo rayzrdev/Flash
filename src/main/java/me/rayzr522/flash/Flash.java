@@ -38,7 +38,7 @@ public class Flash extends FlashPlugin {
             @Override
             public CommandResult execute(CommandContext ctx) {
                 if ("".isEmpty()) {
-                    Button button = new Button(Material.GLASS, "Hello")
+                    Button button = new Button(3, 3, Material.GLASS, "Hello")
                             .setOnClick(clickEvent -> clickEvent.getOwner().sendMessage("Hey!"));
 
                     FlowInventoryGui.forPlayer(ctx.getPlayer())
