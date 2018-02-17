@@ -132,4 +132,11 @@ public class Button extends Node {
         clickEvent.setCancelled(true);
         onClick.accept(clickEvent);
     }
+
+    @Override
+    public String toString() {
+        return "Button{" +
+                "item=" + item.getValue().getItemMeta().getDisplayName() +
+                '}';
+    }
 }

@@ -14,11 +14,27 @@ public class FlowPane extends Pane {
     private static final Logger LOGGER = LogFactory.create(FlowPane.class);
 
     private boolean[][] slots;
+    private Alignment alignment;
 
     public FlowPane(int width, int height) {
         super(width, height);
 
         slots = new boolean[width][height];
+        alignment = Alignment.HORIZONTAL;
+    }
+
+    /**
+     * Sets the {@link Alignment} this pane follows
+     *
+     * @param alignment the new alignment
+     * @return this pane
+     */
+    public FlowPane setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+        placeChildren();
+        getRenderTarget().ifPresent(this::render); // we need to repaint everything, jim
+
+        return this;
     }
 
     /**
@@ -105,16 +121,7 @@ public class FlowPane extends Pane {
      * @return the found space (X, Y) or null if none
      */
     private Pair<Integer, Integer> getPositionOfSize(int width, int height) {
-        // naive algo, not particularly intelligent, impressive runtime
-        // x and y swapped to distribute from left to right, top to bottom
-        for (int y = 0; y < slots[0].length; y++) {
-            for (int x = 0; x < slots.length; x++) {
-                if (hasSpaceOfSize(x, y, width, height)) {
-                    return new Pair<>(x, y);
-                }
-            }
-        }
-        return null;
+        return alignment.findFreeSpace(this, width, height);
     }
 
     /**
@@ -127,6 +134,9 @@ public class FlowPane extends Pane {
      * @return true if there is enough space
      */
     private boolean hasSpaceOfSize(int x, int y, int width, int height) {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Why is x or y negative? (x: " + x + ", y: " + y + ")");
+        }
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if (x + i >= slots.length || y + j >= slots[x + i].length) {
@@ -171,5 +181,58 @@ public class FlowPane extends Pane {
      */
     private enum StartPositionKey {
         X, Y
+    }
+
+    public enum Alignment {
+        CENTER() {
+            @Override
+            Pair<Integer, Integer> findFreeSpace(FlowPane pane, int width, int height) {
+                for (int y = 0; y < pane.slots[0].length; y++) {
+                    int lastX = (int) Math.ceil((pane.slots.length + 1) / 2.0);
+
+                    for (int x = 0; x < pane.slots.length; x++) {
+                        int adjustedX = x % 2 == 0 ? -x : x;
+                        lastX += adjustedX;
+
+                        if (pane.hasSpaceOfSize(lastX - 1, y, width, height)) {
+                            return new Pair<>(lastX - 1, y);
+                        }
+                    }
+                }
+                return null;
+            }
+        },
+        HORIZONTAL() {
+            @Override
+            Pair<Integer, Integer> findFreeSpace(FlowPane pane, int width, int height) {
+                // naive algo, not particularly intelligent, impressive runtime
+                // x and y swapped to distribute from left to right, top to bottom
+                for (int y = 0; y < pane.slots[0].length; y++) {
+                    for (int x = 0; x < pane.slots.length; x++) {
+                        if (pane.hasSpaceOfSize(x, y, width, height)) {
+                            return new Pair<>(x, y);
+                        }
+                    }
+                }
+                return null;
+            }
+        },
+        VERTICAL() {
+            @Override
+            Pair<Integer, Integer> findFreeSpace(FlowPane pane, int width, int height) {
+                for (int x = 0; x < pane.slots.length; x++) {
+                    for (int y = 0; y < pane.slots[0].length; y++) {
+                        if (pane.hasSpaceOfSize(x, y, width, height)) {
+                            return new Pair<>(x, y);
+                        }
+                    }
+                }
+
+                return null;
+            }
+        };
+
+        abstract Pair<Integer, Integer> findFreeSpace(FlowPane pane, int width, int height);
+
     }
 }
