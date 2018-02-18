@@ -191,7 +191,7 @@ public class FlowPane extends Pane {
                     int lastX = (int) Math.ceil((pane.slots.length + 1) / 2.0);
 
                     for (int x = 0; x < pane.slots.length; x++) {
-                        int adjustedX = x % 2 == 0 ? -x : x;
+                        int adjustedX = x % 2 == 0 ? x : -x;
                         lastX += adjustedX;
 
                         if (pane.hasSpaceOfSize(lastX - 1, y, width, height)) {
