@@ -82,6 +82,9 @@ public class FlowPane extends Pane {
         placeChildren();
     }
 
+    /**
+     * Computes the position for all children again.
+     */
     private void placeChildren() {
         for (Node node : getChildren()) {
             if (!placeChild(node)) {
@@ -184,6 +187,22 @@ public class FlowPane extends Pane {
     }
 
     public enum Alignment {
+        /**
+         * Aligns children in a center-first fashion. It will check the middle of the row and then expand to the two
+         * sides, going left first.
+         * <p>
+         * Example (Inserting A, B, C):
+         * <p>
+         * <pre>
+         *     ___
+         *
+         *     _A_
+         *
+         *     BA_
+         *
+         *     BAC
+         * </pre>
+         */
         CENTER() {
             @Override
             Pair<Integer, Integer> findFreeSpace(FlowPane pane, int width, int height) {
@@ -202,6 +221,21 @@ public class FlowPane extends Pane {
                 return null;
             }
         },
+        /**
+         * Aligns children from left to right, top to bottom
+         * <p>
+         * Example (Inserting A, B, C):
+         * <p>
+         * <pre>
+         *     ___
+         *
+         *     A__
+         *
+         *     AB_
+         *
+         *     ABC
+         * </pre>
+         */
         HORIZONTAL() {
             @Override
             Pair<Integer, Integer> findFreeSpace(FlowPane pane, int width, int height) {
@@ -217,6 +251,17 @@ public class FlowPane extends Pane {
                 return null;
             }
         },
+        /**
+         * Aligns children from top to bottom, left to right
+         * <p>
+         * Example (Inserting A, B, C):
+         * <p>
+         * <pre>
+         *     _       A       A       A
+         *     _  ==>  _  ==>  B  ==>  B
+         *     _       _       _       C
+         * </pre>
+         */
         VERTICAL() {
             @Override
             Pair<Integer, Integer> findFreeSpace(FlowPane pane, int width, int height) {
