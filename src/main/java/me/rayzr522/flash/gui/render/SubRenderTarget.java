@@ -75,9 +75,9 @@ public class SubRenderTarget implements RenderTarget {
     public RenderTarget getSubsetTarget(int minX, int maxX, int minY, int maxY) {
         return delegate.getSubsetTarget(
                 this.minX + minX,
-                this.minX + maxX,
+                Math.min(this.maxX, this.minX + maxX), // do not draw over out assigned render area
                 this.minY + minY,
-                this.minY + maxY
+                Math.min(this.maxY, this.minY + maxY)  // do not draw over out assigned render area
         );
     }
 
