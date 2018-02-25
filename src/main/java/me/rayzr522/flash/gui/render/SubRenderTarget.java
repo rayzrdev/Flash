@@ -35,13 +35,34 @@ public class SubRenderTarget implements RenderTarget {
         this.maxY = maxY;
     }
 
+    protected int getMinX() {
+        return minX;
+    }
+
+    protected int getMaxX() {
+        return maxX;
+    }
+
+    protected int getMinY() {
+        return minY;
+    }
+
+    protected int getMaxY() {
+        return maxY;
+    }
+
+    protected RenderTarget getDelegate() {
+        return delegate;
+    }
+
     @Override
     public boolean validateCoordinate(int x, int y) {
-        if (x < 0 || y < 0) {
+        //noinspection SimplifiableIfStatement
+        if (x + minX > maxX || y + minY > maxY) {
             return false;
         }
         //noinspection SimplifiableIfStatement
-        if (x + minX > maxX || y + minY > maxY) {
+        if (x + minX < minX || y + minY < minY) {
             return false;
         }
         return delegate.validateCoordinate(x + minX, y + minY);

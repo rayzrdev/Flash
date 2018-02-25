@@ -1,6 +1,7 @@
 package me.rayzr522.flash.gui.display;
 
 import me.rayzr522.flash.gui.RenderTarget;
+import me.rayzr522.flash.gui.properties.NodePropertyChangeWatcher;
 import me.rayzr522.flash.struct.Pair;
 import org.apache.commons.lang.math.IntRange;
 
@@ -13,13 +14,13 @@ import java.util.Optional;
 public abstract class Pane extends Node {
 
     private List<Node> children;
-    private ChildChangeWatcher childChangeWatcher;
+    private NodePropertyChangeWatcher nodePropertyChangeWatcher;
 
     public Pane(int width, int height) {
         super(width, height);
 
         this.children = new ArrayList<>();
-        this.childChangeWatcher = new ChildChangeWatcher(this);
+        this.nodePropertyChangeWatcher = new NodePropertyChangeWatcher(this::renderChildImpl);
     }
 
     /**
@@ -56,9 +57,9 @@ public abstract class Pane extends Node {
      *
      * @param node the node to render
      */
-    void renderChildImpl(Node node) {
+    private void renderChildImpl(Node node) {
         if (!getChildren().contains(node)) {
-            childChangeWatcher.unwatchChild(node);
+            nodePropertyChangeWatcher.unwatchChild(node);
             return;
         }
         // needed in case the size changed
@@ -107,7 +108,7 @@ public abstract class Pane extends Node {
      */
     protected void registerChild(Node child) {
         children.add(child);
-        childChangeWatcher.watchNode(child);
+        nodePropertyChangeWatcher.watchNode(child);
         updateChildBounds(child);
     }
 

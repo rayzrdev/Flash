@@ -1,7 +1,7 @@
-package me.rayzr522.flash.gui.display;
+package me.rayzr522.flash.gui.properties;
 
 import me.rayzr522.flash.factory.LogFactory;
-import me.rayzr522.flash.gui.properties.ObservableProperty;
+import me.rayzr522.flash.gui.display.Node;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -11,20 +11,20 @@ import java.util.logging.Logger;
 /**
  * Watches child Nodes for changes, to update the parent pane.
  */
-class ChildChangeWatcher {
+public class NodePropertyChangeWatcher {
 
-    private static final Logger LOGGER = LogFactory.create(ChildChangeWatcher.class);
+    private static final Logger LOGGER = LogFactory.create(NodePropertyChangeWatcher.class);
 
-    private Pane owner;
+    private Callback changeCallback;
     private Map<Node, Runnable> watched;
 
     /**
      * Reports to a given pane.
      *
-     * @param owner the pane to report to
+     * @param changeCallback the callback to report to
      */
-    ChildChangeWatcher(Pane owner) {
-        this.owner = owner;
+    public NodePropertyChangeWatcher(Callback changeCallback) {
+        this.changeCallback = changeCallback;
 
         this.watched = new HashMap<>();
     }
@@ -35,7 +35,7 @@ class ChildChangeWatcher {
      * @param node the node to watch
      */
     public void watchNode(Node node) {
-        Runnable changeListener = () -> owner.renderChildImpl(node);
+        Runnable changeListener = () -> changeCallback.nodeChanged(node);
 
         for (ObservableProperty<?> property : getPropertiesSafe(node)) {
             property.addListener(changeListener);
@@ -115,5 +115,16 @@ class ChildChangeWatcher {
         }
 
         watched.remove(node);
+    }
+
+    @FunctionalInterface
+    public interface Callback {
+
+        /**
+         * Called when a property of a node was changed.
+         *
+         * @param node the node that changed
+         */
+        void nodeChanged(Node node);
     }
 }

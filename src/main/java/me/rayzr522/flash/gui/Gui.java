@@ -3,6 +3,7 @@ package me.rayzr522.flash.gui;
 import me.rayzr522.flash.gui.display.Node;
 import me.rayzr522.flash.gui.display.Pane;
 import me.rayzr522.flash.gui.events.ClickEvent;
+import me.rayzr522.flash.gui.properties.NodePropertyChangeWatcher;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,6 +21,11 @@ public class Gui implements GuiEventReceiver {
         this.renderTarget = renderTarget;
         this.owner = owner;
         this.rootPane = rootPane;
+
+        NodePropertyChangeWatcher nodePropertyChangeWatcher = new NodePropertyChangeWatcher(
+                node -> node.implRender(renderTarget)
+        );
+        nodePropertyChangeWatcher.watchNode(rootPane);
 
         renderTarget.setGui(this);
     }
