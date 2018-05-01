@@ -36,6 +36,7 @@
 *.iml
 *.eml
 *.jardesc
+dependency-reduced-pom.xml
 
 # =========================
 # Linux files

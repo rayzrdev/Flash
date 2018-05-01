@@ -1,5 +1,6 @@
-package me.rayzr522.flash.gui;
+package me.rayzr522.flash.test.calculator;
 
+import me.rayzr522.flash.gui.Gui;
 import me.rayzr522.flash.gui.display.Pane;
 import me.rayzr522.flash.gui.display.component.Button;
 import me.rayzr522.flash.gui.display.component.Label;
