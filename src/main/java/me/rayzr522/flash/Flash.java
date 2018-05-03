@@ -5,19 +5,26 @@ import me.rayzr522.flash.command.CommandHandler;
 import me.rayzr522.flash.command.CommandResult;
 import me.rayzr522.flash.gui.listener.InventoryGuiListener;
 import me.rayzr522.flash.test.calculator.CalculatorCommand;
+import me.rayzr522.flash.test.prompt.UserInfoCommand;
 
 public class Flash extends FlashPlugin {
+    private static Flash instance;
+
+    public static Flash getInstance() {
+        return instance;
+    }
+
     @Override
     public void init() {
         getLogger().info(getName() + " v" + getDescription().getVersion() + " has been successfully enabled. Prepare to get Flash-ed!");
 
         getServer().getPluginManager().registerEvents(new InventoryGuiListener(), this);
 
-        Flash self = this;
+        instance = this;
         registerCommand(new CommandHandler() {
             @Override
             public FlashPlugin getPlugin() {
-                return self;
+                return instance;
             }
 
             @Override
@@ -46,6 +53,7 @@ public class Flash extends FlashPlugin {
 
         // Disable later
         registerCommand(new CalculatorCommand(this));
+        registerCommand(new UserInfoCommand(this));
     }
 
     @Override
@@ -60,6 +68,6 @@ public class Flash extends FlashPlugin {
 
     @Override
     public void unload() {
-
+        instance = null;
     }
 }

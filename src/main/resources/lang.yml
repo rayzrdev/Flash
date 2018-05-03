@@ -8,6 +8,7 @@ command:
     only-players: "Only players can use this command!"
     no-player: "The player '%s' does not exist!"
     not-number: "That is not a valid number!"
+    not-decimal: "That is not a valid decimal number!"
     invalid-usage: "Usage: &7/%s &e%s"
   flash:
     usage: "[reload]"
