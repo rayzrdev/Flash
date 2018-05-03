@@ -1,9 +1,7 @@
 package me.rayzr522.flash.command;
 
 import me.rayzr522.flash.command.exception.GenericCommandException;
-import me.rayzr522.flash.command.exception.NoSuchPlayerException;
 import me.rayzr522.flash.utils.ArrayUtils;
-import me.rayzr522.flash.utils.Players;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -118,8 +116,7 @@ public class CommandContext {
     }
 
     public Player shiftPlayer() {
-        String name = shift();
-        return shift(arg -> Players.get(arg).orElseThrow(() -> new NoSuchPlayerException(arg)));
+        return shift(ArgTypes.PLAYER);
     }
 
     public void tell(String key, Object... formatterArgs) {
