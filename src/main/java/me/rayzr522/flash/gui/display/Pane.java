@@ -101,8 +101,8 @@ public abstract class Pane extends Node {
 
     /**
      * Registers a node as a child of this. Needed to correctly watch for changes.
-     * <p>
-     * After calling this method, {@link #getChildren()} will contain the passed node
+     * <br>
+     * <br>After calling this method, {@link #getChildren()} will contain the passed node
      *
      * @param child the child to add
      */
@@ -114,8 +114,8 @@ public abstract class Pane extends Node {
 
     /**
      * Removes a child from this pane.
-     * <p>
-     * After calling this method, {@link #getChildren()} will no longer contain the passed node and the area it made up
+     * <br>
+     * <br>After calling this method, {@link #getChildren()} will no longer contain the passed node and the area it made up
      * will be cleared.
      *
      * @param node the node to remove
@@ -183,8 +183,8 @@ public abstract class Pane extends Node {
 
     /**
      * Computes the bounds of the child. First value is the xRange, second the yRange.
-     * <p>
-     * <p><br>Both are zero based and inclusive
+     * <br>
+     * <br>Both are zero based and inclusive
      *
      * @param child the child to compute the bounds for
      * @return the computed bounds

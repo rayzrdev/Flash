@@ -46,6 +46,7 @@ public class FlowInventoryGui<T extends Pane> {
      * Sets the root pane for the {@link Gui}. The default is a {@link FlowPane} spanning the whole area.
      *
      * @param pane the root pane
+     * @param <Z>  the type of pane that is being set as the root
      * @return this object
      */
     @SuppressWarnings("unchecked")

@@ -44,8 +44,8 @@ public class InventoryRenderTarget implements RenderTarget, InventoryHolder {
 
     /**
      * Creates a new {@link InventoryRenderTarget} that can draw inside the given bounds, starting at the origin.
-     * <p>
-     * <p><br>The title will be null, so display the default.
+     * <br>
+     * <br>The title will be null, so display the default.
      *
      * @param width  the width it can draw inside
      * @param height the height it can draw inside.

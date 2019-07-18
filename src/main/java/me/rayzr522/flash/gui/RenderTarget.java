@@ -45,8 +45,9 @@ public interface RenderTarget {
 
     /**
      * Returns a sub-render target that can only modify things in the given range.
-     * <p>
-     * <p>All subsequent render calls to this target will be <em>relative to its [minX,minY]
+     * <br>
+     * <br>
+     * All subsequent render calls to this target will be <em>relative to its [minX,minY]
      * point!</em>
      *
      * @param minX the minimum x this target can draw (inclusive)
@@ -75,8 +76,8 @@ public interface RenderTarget {
 
     /**
      * Sets the {@link Gui} this target belongs to.
-     * <p>
-     * <p><br>You should likely <em>not</em> call this.
+     * <br>
+     * <br>You should likely <em>not</em> call this.
      *
      * @param gui the gui this target belongs to
      */

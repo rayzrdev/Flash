@@ -64,8 +64,8 @@ public class Button extends Node {
 
     /**
      * Sets the action to run when the button is clicked.
-     * <p>
-     * <p><br>The event is always cancelled before this handler is called.
+     * <br>
+     * <br>The event is always cancelled before this handler is called.
      *
      * @param onClick the click handler
      * @return this button

@@ -99,8 +99,8 @@ public abstract class FlashPlugin extends JavaPlugin {
      *
      * @param sender      The {@link CommandSender} to check.
      * @param permission  The permission to check.
-     * @param sendMessage
-     * @return
+     * @param sendMessage Whether or not to send a message saying they are missing permissions.
+     * @return Whether or not the user has the given permission.
      */
     public boolean checkPermission(CommandSender sender, String permission, boolean sendMessage) {
         Objects.requireNonNull(sender, "sender cannot be null!");

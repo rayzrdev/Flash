@@ -115,8 +115,8 @@ public class FlowPane extends Pane {
 
     /**
      * Tries to find a free position where a rectangle with the given size can fit.
-     * <p>
-     * This is a variant of the bin packing problem, and my algorithm is awesome for it: Slow and finds not even a
+     * <br>
+     * <br>This is a variant of the bin packing problem, and my algorithm is awesome for it: Slow and finds not even a
      * local maximum.
      *
      * @param width  the width of the space to find
@@ -190,9 +190,9 @@ public class FlowPane extends Pane {
         /**
          * Aligns children in a center-first fashion. It will check the middle of the row and then expand to the two
          * sides, going left first.
-         * <p>
+         * <br>
          * Example (Inserting A, B, C):
-         * <p>
+         * <br>
          * <pre>
          *     ___
          *
@@ -223,9 +223,9 @@ public class FlowPane extends Pane {
         },
         /**
          * Aligns children from left to right, top to bottom
-         * <p>
+         * <br>
          * Example (Inserting A, B, C):
-         * <p>
+         * <br>
          * <pre>
          *     ___
          *
@@ -253,12 +253,12 @@ public class FlowPane extends Pane {
         },
         /**
          * Aligns children from top to bottom, left to right
-         * <p>
+         * <br>
          * Example (Inserting A, B, C):
-         * <p>
+         * <br>
          * <pre>
          *     _       A       A       A
-         *     _  ==>  _  ==>  B  ==>  B
+         *     _  ==&gt;  _  ==&gt;  B  ==&gt;  B
          *     _       _       _       C
          * </pre>
          */

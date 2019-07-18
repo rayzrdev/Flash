@@ -16,8 +16,8 @@ public class GridPane extends Pane {
 
     /**
      * Creates a new {@link GridPane} with the given settings.
-     * <p>
-     * <p><br>The {@link #getGridWidth()} and {@link #getGridHeight()} are computed by diving the width/height with
+     * <br>
+     * <br>The {@link #getGridWidth()} and {@link #getGridHeight()} are computed by diving the width/height with
      * the rows/columns. This automatically floors the value.
      *
      * @param width   the width of this pane
